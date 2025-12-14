@@ -1,0 +1,76 @@
+services:
+  hsr:
+    image: okdhryk/ros:humble-hsr
+    network_mode: host
+    cap_add:
+    - SYS_TIME
+    - SYS_ADMIN
+    security_opt:
+    - seccomp:unconfined
+  #  command: terminator
+    environment:
+      - DISPLAY=${DISPLAY}
+      - NO_AT_BRIDGE=1
+    volumes:
+      - ${WORKSPACE_DIR}:${HOME}/${WORKSPACE_DIR}
+      - /tmp/.X11-unix:/tmp/.X11-unix
+#      - $HOME/.Xauthority:/${HOME}/.Xauthority
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    devices:
+      - /dev/snd:/dev/snd
+      - /dev/dri:/dev/dri
+    privileged: true
+    ipc: host
+    user: "${UID}:${GID}"
+    group_add:
+      - audio
+    tty: true
+    stdin_open: true
+  
+  hsr-gpu:
+    image: okdhryk/cuda:12.9.1-cudnn-devel-humble-hsr
+    cap_add:
+      - SYS_TIME
+      - SYS_ADMIN
+    security_opt:
+    - seccomp:unconfined
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities:      
+                - gpu
+    #command: bash -c "bash"    
+    #command: terminator    
+    network_mode: "host"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all        
+      - MESA_LOADER_DRIVER_OVERRIDE=i965
+      - DISPLAY=${DISPLAY}
+#      - XAUTHORITY={$HOME}/.Xauthority
+      - NO_AT_BRIDGE=1
+      - TZ=Asia/Tokyo
+
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro      
+      - /etc/asound.conf:/etc/asound.conf
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ~/.Xauthority:/home/${USER_NAME}/.Xauthority
+      - ${WORKSPACE_DIR}:${HOME}/${WORKSPACE_DIR}
+      - /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket
+    devices:
+      - /dev/snd:/dev/snd
+      - /dev/dri:/dev/dri
+    privileged: true
+    ipc: host
+    user: "${UID}:${GID}"
+    group_add:
+      - audio
+    tty: true
+    stdin_open: true
+
+  
