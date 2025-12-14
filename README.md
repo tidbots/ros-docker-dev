@@ -1,4 +1,4 @@
-# DockerでROS2を開発する
+# DockerでROS2を開発するためのテンプレート
 
 - Ubuntu 20.04
 - ROS2 Humble
