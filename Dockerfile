@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Hiroyuki Okada
+# Copyright (c) 2025 Hiroyuki Okada 
 # All rights reserved.
 FROM ubuntu:22.04 AS cpu
 LABEL maintainer="Hiroyuki Okada <hiroyuki.okada@okadanet.org>"
