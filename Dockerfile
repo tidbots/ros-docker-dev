@@ -74,6 +74,12 @@ RUN source /opt/ros/humble/setup.bash && \
       rosdep install --from-paths . -y --ignore-src && \
       colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release       
 
+# Setup uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+ENV UV_LINK_MODE=copy
+RUN echo 'eval "$(uv generate-shell-completion bash)"' >> ~/.bashrc \
+&& make venv
+
 # Add user and group
 ARG UID
 ARG GID
