@@ -1,5 +1,5 @@
 #! /bin/bash
-# Copyright (c) 2022 Hiroyuki Okada
+# Copyright (c) 2025 Hiroyuki Okada
 # All rights reserved.
 USER_NAME:=$(shell id -un)
 GROUP_NAME:=$(shell id -gn)
@@ -27,17 +27,17 @@ build: ## Build All
 
 
 build_cpu: ## Build Humble [CPU] Container
-	docker compose  -f compose.build.yaml build hsr
-	@printf "\n\033[92mBuild Docker Image: okdhryk/ros:humble-hsr\033[0m\n"
+	docker compose  -f compose.build.yaml build humble
+	@printf "\n\033[92mBuild Docker Image: tidbots/ros:humble\033[0m\n"
 
-build_gpu: ## Build HSR Humble [GPU] Container
-	docker compose  -f compose.build.yaml build hsr-gpu
-	@printf "\n\033[92mBuild Docker Image: okdhryk/cuda:12.9.1-cudnn-devel-humble-hsr\033[0m\n"
+build_gpu: ## Build Humble [GPU] Container
+	docker compose  -f compose.build.yaml build humble-gpu
+	@printf "\n\033[92mBuild Docker Image: tidbots/cuda:12.9.1-cudnn-devel-humble\033[0m\n"
 
-run_cpu:  ## Run HSR Humble [CPU] Container
-	docker compose up -d hsr && docker compose exec -ti hsr tmux
-	@printf "\n\033[92mRun HSR Humble CPU : okdhryk/ros:humble-hsr\033[0m\n"
+run_cpu:  ## Run Humble [CPU] Container
+	docker compose up -d humble && docker compose exec -ti humble tmux
+	@printf "\n\033[92mRun Humble CPU : tidbots/ros:humble-hsr\033[0m\n"
 
-run_gpu:  ## Run HSR Humble [GPU] Container
-	docker compose up -d hsr-gpu && docker compose exec -ti hsr-gpu tmux
-	@printf "\n\033[92mRun HSR Humble GPU : okdhryk/cuda:12.9.1-cudnn-devel-humble-hsr\033[0m\n"
+run_gpu:  ## Run Humble [GPU] Container
+	docker compose up -d humble-gpu && docker compose exec -ti humble-gpu tmux
+	@printf "\n\033[92mRun Humble GPU : tidbots/cuda:12.9.1-cudnn-devel-humble\033[0m\n"
