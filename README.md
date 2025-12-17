@@ -67,4 +67,4 @@ GPUバージョンのDockerイメージのビルド
 ```
 ![Test Image 3](https://github.com/tidbots/ros-docker-dev/blob/main/fig/Screenshot from 2025-12-17 14-14-54.png)
 
- 
+ ![](fig/Screenshot from 2025-12-17 14-14-54.png)
