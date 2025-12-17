@@ -23,6 +23,14 @@ Ubuntu 22.04 LTS (Jammy Jellyfish)
 
 
 ## ToDo
+PulseAudio 経由でのみ再生可能
+
+正解コマンド：
+
+aplay -D pulse output2.wav
+
+
+
 
 
 ## ホストPCのディレクトリの共有
