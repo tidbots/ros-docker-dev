@@ -1,5 +1,5 @@
 services:
-    humble:
+    noetic:
         build:
             context: .
             target: cpu
@@ -9,8 +9,8 @@ services:
             - USER_NAME=$USER_NAME
             - GROUP_NAME=$GROUP_NAME
             - PASSWORD=$PASSWORD
-        image: tidbots/ros:humble
-    humble-gpu:
+        image: okdhryk/ros:noetic-desktop-full
+    noetic-gpu:
         build:
             context: .
             target: gpu
@@ -20,4 +20,5 @@ services:
             - USER_NAME=$USER_NAME
             - GROUP_NAME=$GROUP_NAME
             - PASSWORD=$PASSWORD           
-        image: tidbots/cuda:12.9.1-cudnn-devel-humble
+        image: okdhryk/cuda:12.9.1-cudnn-devel-noetic-desktop-full
+
