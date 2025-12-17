@@ -1,13 +1,11 @@
-# Copyright (c) 2025 Hiroyuki Okada 
+# Copyright (c) 2025 Hiroyuki Okada
 # All rights reserved.
-FROM ubuntu:22.04 AS cpu
+FROM ubuntu:20.04 AS cpu
 LABEL maintainer="Hiroyuki Okada <hiroyuki.okada@okadanet.org>"
 LABEL org.okadanet.vendor="Hiroyuki Okada" \
       org.okadanet.dept="TIDBots" \
       org.okadanet.version="1.0.0" \
       org.okadanet.released="November 1, 2025"
-
-SHELL ["/bin/bash", "-c"]
 
 RUN sed -i.org -e 's|archive.ubuntu.com|ubuntutym.u-toyama.ac.jp|g' /etc/apt/sources.list
 RUN apt-get clean
@@ -49,36 +47,20 @@ RUN apt-get update && apt-get install -y \
   terminator xterm nano vim htop \
   software-properties-common gdb valgrind sudo
 
+# Install ROS Noetic
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+RUN apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends ros-noetic-desktop-full
+RUN apt-get install -y --no-install-recommends python3-rosdep
+RUN rosdep init \
+ && rosdep fix-permissions \
+ && rosdep update
 
-# Install ROS2
-RUN apt update \
-  && apt install -y --no-install-recommends \
-     curl gnupg2 lsb-release python3-pip vim wget build-essential ca-certificates
-RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg \
-  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
-RUN apt update \
-#  && apt upgrade \
-  && DEBIAN_FRONTEND=noninteractive \
-  && apt install -y --no-install-recommends \
-     ros-humble-desktop   python3-colcon-common-extensions python3-rosdep \
-     ros-humble-smach ros-humble-smach-ros  \
-  && rm -rf /var/lib/apt/lists/*
 
-RUN rosdep init && rosdep update
-RUN source /opt/ros/humble/setup.bash && \
-    mkdir -p /ros2_ws/src && cd /ros2_ws/src 
-    
-RUN source /opt/ros/humble/setup.bash && \
-      cd /ros2_ws && \
-      apt update && \
-      rosdep install --from-paths . -y --ignore-src && \
-      colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release       
-      
-# Setup uv
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-ENV UV_LINK_MODE=copy
-RUN echo 'eval "$(uv generate-shell-completion bash)"' >> /home/$USER_NAME/.bashrc
-#&& make venv
+
+
+
 
 # Add user and group
 ARG UID
@@ -92,9 +74,6 @@ RUN groupadd -g $GID $GROUP_NAME && \
     echo "$USER_NAME   ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER ${USER_NAME}
 
-
-
-
 # Config (if you wish)
 RUN mkdir -p ~/.config/terminator/
 COPY assets/terminator_config /home/$USER_NAME/.config/terminator/config 
@@ -102,9 +81,8 @@ COPY assets/tmux.conf /home/$USER_NAME/.tmux.conf
 COPY assets/tmux.session.conf /home/$USER_NAME/.tmux.session.conf 
 
 # .bashrc
-RUN echo "source /opt/ros/humble/setup.bash" >> /home/$USER_NAME/.bashrc
-RUN echo "source /home/${USER_NAME}/ros2_ws/install/setup.bash" >> /home/$USER_NAME/.bashrc
-
+RUN echo "source /opt/ros/noetic/setup.bash" >> /home/${USER_NAME}/.bashrc
+#RUN echo "source /home/${USER_NAME}/Dropbox/workspace/catkin_ws/devel/setup.bash" >> /home/$USER_NAME/.bashrc
 
 
 # entrypoint
@@ -118,20 +96,7 @@ CMD ["/bin/bash"]
 
 #FROM nvidia/cuda:12.9.1-cudnn-devel-ubuntu20.04 AS gpu
 #FROM nvidia/cuda:13.0.1-cudnn-devel-ubuntu22.04 AS gpu
-#FROM nvidia/cudagl:11.3.0-devel-ubuntu20.04 AS gpu
-FROM nvidia/opengl:1.0-glvnd-devel-ubuntu22.04 AS gpu
-
-SHELL ["/bin/bash", "-c"]
-ARG DEBIAN_FRONTEND=noninteractive
-
-# nvidia-container-runtime
-ENV NVIDIA_VISIBLE_DEVICES \
-    ${NVIDIA_VISIBLE_DEVICES:-all}
-ENV NVIDIA_DRIVER_CAPABILITIES \
-    ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
-
-
-
+FROM nvidia/cudagl:11.3.0-devel-ubuntu20.04 AS gpu
 
 # Install packages without prompting the user to answer any questions
 ENV DEBIAN_FRONTEND noninteractive 
@@ -168,35 +133,17 @@ RUN apt-get update && apt-get install -y \
   terminator xterm nano vim htop \
   software-properties-common gdb valgrind sudo
 
-# Install ROS2
-RUN apt update \
-  && apt install -y --no-install-recommends \
-     curl gnupg2 lsb-release python3-pip vim wget build-essential ca-certificates
-RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg \
-  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
-RUN apt update \
-#  && apt upgrade \
-  && DEBIAN_FRONTEND=noninteractive \
-  && apt install -y --no-install-recommends \
-     ros-humble-desktop   python3-colcon-common-extensions python3-rosdep \
-     ros-humble-smach ros-humble-smach-ros  \
-  && rm -rf /var/lib/apt/lists/*
+# Install ROS Noetic
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+RUN apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends ros-noetic-desktop-full
+RUN apt-get install -y --no-install-recommends python3-rosdep
+RUN rosdep init \
+ && rosdep fix-permissions \
+ && rosdep update
 
-RUN sudo rosdep init && rosdep update
-RUN source /opt/ros/humble/setup.bash && \
-    mkdir -p /ros2_ws/src 
-    
-RUN source /opt/ros/humble/setup.bash && \
-      cd /ros2_ws && \
-      apt update && \
-      rosdep install --from-paths . -y --ignore-src && \
-      colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release 
-      
-# Setup uv
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-ENV UV_LINK_MODE=copy
-RUN echo 'eval "$(uv generate-shell-completion bash)"' >> /home/$USER_NAME/.bashrc
-#&& make venv
+
 
 # Add user and group
 ARG UID
@@ -217,9 +164,8 @@ COPY assets/tmux.conf /home/$USER_NAME/.tmux.conf
 COPY assets/tmux.session.conf /home/$USER_NAME/.tmux.session.conf 
 
 # .bashrc
-# .bashrc
-RUN echo "source /opt/ros/humble/setup.bash" >> /home/$USER_NAME/.bashrc
-RUN echo "source /ros2_ws/install/setup.bash" >> /home/$USER_NAME/.bashrc
+RUN echo "source /opt/ros/noetic/setup.bash" >> /home/${USER_NAME}/.bashrc
+#RUN echo "source /home/${USER_NAME}/Dropbox/workspace/catkin_ws/devel/setup.bash" >> /home/$USER_NAME/.bashrc
 
 
 # entrypoint
@@ -229,3 +175,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["/bin/bash"]
 WORKDIR /home/$USER_NAME
+
