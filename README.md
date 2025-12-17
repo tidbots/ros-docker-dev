@@ -8,7 +8,8 @@
 
 - terminator
 - tmux
-
+- 
+docker compose build --no-cache
 
 # ROS Noetic Ninjemys
 Ubuntu 22.04 LTS (Jammy Jellyfish)
