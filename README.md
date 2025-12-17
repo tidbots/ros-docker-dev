@@ -65,6 +65,4 @@ GPUバージョンのDockerイメージのビルド
 ```
 (host)make run_gpu
 ```
-![Test Image 3](https://github.com/tidbots/ros-docker-dev/blob/main/fig/Screenshot from 2025-12-17 14-14-54.png)
 
- ![]([fig/Screenshot from 2025-12-17 14-14-54.png](https://github.com/tidbots/ros-docker-dev/blob/724ece01fe1ab2ad221fc6292afa8280f1970534/fig/Screenshot%20from%202025-12-17%2014-14-54.png))
