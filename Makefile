@@ -25,22 +25,18 @@ build: ## Build All
 	docker compose -f compose.build.yaml build
 	@printf "\n\033[92mBuild Docker Image: all\033[0m\n"
 
-
-okdhryk/ros:noetic-destop-full
-okdhryk/cuda:12.9.1-cudnn-devel-noetic-desktop-full
-
 build_cpu: ## Build Focal [CPU] Base Container
 	docker compose  -f compose.build.yaml build noetic
-	@printf "\n\033[92mBuild Docker Image: okdhryk/ros:noetic-desktop-full\033[0m\n"
+	@printf "\n\033[92mBuild Docker Image: tidbots/ros:noetic-desktop-full\033[0m\n"
 
 build_gpu: ## Build Focal [GPU] Base Container
 	docker compose  -f compose.build.yaml build noetic-gpu
-	@printf "\n\033[92mBuild Docker Image: okdhryk/ros:12.9.1-cudnn-devel-noetic-desktop-full\033[0m\n"
+	@printf "\n\033[92mBuild Docker Image: tidbots/ros:12.9.1-cudnn-devel-noetic-desktop-full\033[0m\n"
 
 run_cpu:  ## Run Focal [CPU] Base Container
 	docker compose up -d noetic && docker compose exec -ti noetic tmux
-	@printf "\n\033[92mRun Jammy CPU : okdhryk/ros:noetic\033[0m\n"
+	@printf "\n\033[92mRun Jammy CPU : tidbots/ros:noetic\033[0m\n"
 
 run_gpu:  ## Run Focal [GPU] Base Container
 	docker compose up -d noetic-gpu && docker compose exec -ti noetic-gpu tmux
-	@printf "\n\033[92mRun Focal GPU : okdhryk/ros:13.0.1-cudnn-devel-ubuntu22.04\033[0m\n"
+	@printf "\n\033[92mRun Focal GPU : tidbots/ros:13.0.1-cudnn-devel-ubuntu22.04\033[0m\n"
