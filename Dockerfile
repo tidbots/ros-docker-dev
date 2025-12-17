@@ -54,6 +54,7 @@ RUN apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E
 RUN apt-get update \
  && apt-get install -y --no-install-recommends ros-noetic-desktop-full
 RUN apt-get install -y --no-install-recommends python3-rosdep python3-catkin-tools
+RUN apt-get install -y --no-install-recommends  ros-noetic-audio-common
 RUN rosdep init \
  && rosdep fix-permissions \
  && rosdep update
