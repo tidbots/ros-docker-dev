@@ -65,6 +65,6 @@ GPUバージョンのDockerイメージのビルド
 ```
 (host)make run_gpu
 ```
-
+![Test Image 3](fig/Screenshot from 2025-12-17 14-14-54.png)
 
  
