@@ -1,6 +1,6 @@
 services:
   noetic:
-    image: okdhryk/ros:noetic-desktop-full
+    image: tidbots/ros:noetic-desktop-full
     network_mode: host
     cap_add:
     - SYS_TIME
@@ -28,7 +28,7 @@ services:
     stdin_open: true
   
   noetic-gpu:
-    image: okdhryk/cuda:12.9.1-cudnn-devel-noetic-desktop-full
+    image: tidbots/cuda:12.9.1-cudnn-devel-noetic-desktop-full
     cap_add:
       - SYS_TIME
       - SYS_ADMIN
@@ -61,7 +61,6 @@ services:
       - ~/.Xauthority:/home/${USER_NAME}/.Xauthority
       - ${WORKSPACE_DIR}:${WORKSPACE_DIR}
       - /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket
-      - ~/docker/tidbots_docker/hsr-tid:/home/$USER_NAME/catkin_ws/src
     devices:
       - /dev/snd:/dev/snd
       - /dev/dri:/dev/dri
