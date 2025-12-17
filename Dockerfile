@@ -43,7 +43,7 @@ RUN apt-get update && apt-get install -y \
   libcanberra-gtk* \
   python3-pip  python3-tk \
   git wget curl \
-  alsa-utils  \
+  alsa-utils pulseaudio \
   x11-utils x11-apps terminator xterm xauth mesa-utils\
   terminator xterm nano vim htop \
   software-properties-common gdb valgrind sudo
