@@ -131,6 +131,7 @@ RUN apt-get update && apt-get install -y \
   python3-pip  python3-tk \
   git wget curl \
   x11-utils x11-apps terminator xterm xauth mesa-utils\
+  alsa-utils pulseaudio \
   terminator xterm nano vim htop \
   software-properties-common gdb valgrind sudo
 
